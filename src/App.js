@@ -4,6 +4,8 @@ import "./App.css";
 function App() {
   const [studentName, setStudentName] = useState("");
   const [data, setData] = useState([]);
+  const [editStatus,setEditStatus] = useState(false);
+  const [ editdata,setEditData] = useState([]);
 
   const studentNameHandler = (e) => {
     setStudentName(e.target.value);
@@ -14,6 +16,13 @@ function App() {
     if (studentName.trim() === "") {
       alert(" no data given");
     } else {
+
+      editStatus ? updateData() : storeData();
+    
+    }
+  };
+
+  const storeData = () =>{
       const newdata = {
         id: Date.now(),
         value: studentName,
@@ -21,11 +30,35 @@ function App() {
 
       setData([...data, newdata]);
       setStudentName("");
-    }
-  };
+  }
+
+  const updateData = () =>{
+        const newData = data.map((item)=>{
+            if(editdata.id === item.id){
+              return {
+                ...item,
+                value : studentName
+              }
+            }
+            return item;
+
+          })
+          setData(newData);
+          setEditStatus(false);
+          setStudentName('');
+  }
 
   const deleteHandler = (id) =>{
-        const newArray = data.filter( )
+        const newArray = data.filter((item)=> item.id !== id );
+
+        setData(newArray);
+  }
+
+  const editHandler = (item) => {
+    setEditStatus(true);
+    setStudentName(item.value);
+    setEditData(item);
+    
   }
   return (
     <>
@@ -39,7 +72,7 @@ function App() {
             value={studentName}
           />
           <br />
-          <button type="submit">Add</button>
+          <button type="submit">{editStatus ? "update" : "add"}</button>
         </form>
       </center>
 
@@ -50,8 +83,8 @@ function App() {
             {data.map((item) => (
               <>
                 <li>{item.value}</li>
-                <button>edit</button>
-                <button onClick={deleteHandler(item.id)} >delete</button>
+                <button onClick={()=>editHandler(item)}>edit</button>
+                <button onClick={()=>deleteHandler(item.id)} >delete</button>
               </>
             ))}
           </ul>
