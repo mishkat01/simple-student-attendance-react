@@ -26,6 +26,7 @@ function App() {
       const newdata = {
         id: Date.now(),
         value: studentName,
+        isPresent :undefined,
       };
 
       setData([...data, newdata]);
@@ -60,6 +61,27 @@ function App() {
     setEditData(item);
     
   }
+
+  const makePresentHandler = (item) =>{
+
+    if(item.isPresent !== undefined){
+      return alert (`This student is already in the ${item.isPresent === true ? "present list" : "in the absent list"}`)
+    }
+
+    const updatedStudentList = data.map(dataItem=>{
+      if(dataItem.id  === item.id ){
+        return {...dataItem ,isPresent: true};
+      }
+
+      return dataItem;
+    })
+
+    setData(updatedStudentList);
+
+  }
+  const makeAbsentHandler = (item) =>{
+    
+  }
   return (
     <>
       <center>
@@ -85,12 +107,23 @@ function App() {
                 <li>{item.value}</li>
                 <button onClick={()=>editHandler(item)}>edit</button>
                 <button onClick={()=>deleteHandler(item.id)} >delete</button>
+                <button onClick={()=>makePresentHandler(item)} >make present</button>
+                <button onClick={()=>makeAbsentHandler(item)} >make absent</button>
               </>
             ))}
           </ul>
         </div>
         <div>
           <h1>Present</h1>
+          <ul>
+              {data.filter((item)=>item.isPresent === true).map((item)=>(
+
+                <li>{item.value}</li>
+              ))
+              
+              }
+
+          </ul>
         </div>
         <div>
           <h1>absent</h1>
